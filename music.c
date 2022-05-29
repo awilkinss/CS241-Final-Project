@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 struct node{
-  char key;
+  char key[10];
   int freq;
   struct node *next;
   struct node *prev;
@@ -15,7 +15,7 @@ struct list{
   struct node *tail;
 };
 struct dictionary{
-  char key;
+  char key[10];
   struct list *chords;
   struct list *freq;
   struct dictionary *next;
@@ -25,13 +25,13 @@ struct dictList{
   struct dictionary *head;
   struct dictionary *tail;
 };
-struct node *createNode(char c){
+struct node *createNode(char *c){
   struct node *newNode = malloc(sizeof(struct node));
   if(newNode == NULL){
     perror("Error!");
     exit(1);
   }
-  newNode->key = c;
+  strcpy(newNode->key,c);
   newNode->freq = 0;
   newNode->next = NULL;
   newNode->prev = NULL;
@@ -39,8 +39,8 @@ struct node *createNode(char c){
 }
 struct list *createList(){
   struct list *newList = malloc(sizeof(struct list));
-  struct node *head = createNode('s');
-  struct node *tail = createNode('s');
+  struct node *head = createNode("s");
+  struct node *tail = createNode("s");
   if(newList == NULL){
     perror("Error!");
     exit(1);
@@ -51,13 +51,13 @@ struct list *createList(){
   newList->tail->prev = newList->head;
   return newList;
 }
-struct dictionary *createDict(char c){
+struct dictionary *createDict(char *c){
   struct dictionary *newDictionary = malloc(sizeof(struct dictionary));
   if(newDictionary == NULL){
     perror("Error: ");
     exit(1);
   }
-  newDictionary->key = c;
+  strcpy(newDictionary->key,c);
   newDictionary->chords = createList();
   newDictionary->freq = createList();
   newDictionary->next = NULL;
@@ -70,28 +70,28 @@ struct dictList *createDictList(){
     perror("Error!");
     exit(1);
   }
-  struct dictionary *head = createDict('s');
-  struct dictionary *tail = createDict('s');
+  struct dictionary *head = createDict("s");
+  struct dictionary *tail = createDict("s");
   newDictList->head = head;
   newDictList->tail = tail;
   newDictList->head->next = newDictList->tail;
   newDictList->tail->prev = newDictList->head;
   return newDictList;
 }
-struct dictionary *fetchDictionary(char key, struct dictList *song){
+struct dictionary *fetchDictionary(char *key, struct dictList *song){
   struct dictionary *temp = song->head->next;
   while(temp != song->tail){
-    if(temp->key == key){
+    if(strcmp(temp->key,key) == 0){
       return temp;
     }
     temp= temp->next;
   }
   return temp;
 }
-struct node *fetchChord(char chord, struct list *chordList){
+struct node *fetchChord(char *chord, struct list *chordList){
   struct node *temp = chordList->head->next;
   while(temp != chordList->tail){
-    if(temp->key == chord){
+    if(strcmp(temp->key,chord) == 0){
       return temp;
     }
     temp = temp->next;
@@ -133,10 +133,10 @@ void insertDictionary(struct dictionary *newDict, struct dictList *song){
   }
 }
 
-void updateDictionary(char chord, struct dictionary *dict){
+void updateDictionary(char *chord, struct dictionary *dict){
   struct list *chordListTemp = dict->chords;
   struct node *tempChord = fetchChord(chord, chordListTemp);
-  if(tempChord->key == 's'){
+  if(strcmp(tempChord->key, "s") == 0){
     struct node *tempChord2 = createNode(chord);
     tempChord2->freq = tempChord2->freq +1;
     insertNode(tempChord2, chordListTemp);
@@ -145,9 +145,9 @@ void updateDictionary(char chord, struct dictionary *dict){
   }
 }
 
-void updateDictionaryList(char dictionaryKey,char chord, struct dictList *song){
+void updateDictionaryList(char *dictionaryKey,char *chord, struct dictList *song){
   struct dictionary *dict = fetchDictionary(dictionaryKey,song);
-  if(dict->key == 's'){
+  if(strcmp(dict->key,"s") == 0){
     struct dictionary *newDict = createDict(dictionaryKey);
     updateDictionary(chord, newDict);
     insertDictionary(newDict,song);
@@ -156,16 +156,22 @@ void updateDictionaryList(char dictionaryKey,char chord, struct dictList *song){
   }
 }
     
-
 int main(){
 
   struct dictList *song = createDictList();
-  printf("%c\n",song->head->key);
-  printf("%c\n",song->head->chords->head->key);
-  updateDictionaryList('C','F', song);
-  printf("%c\n",song->head->next->key);
-  printf("%c\n",song->head->next->chords->head->next->key);
+  printf("%s\n",song->head->key);
+  printf("%s\n",song->head->chords->head->key);
+  updateDictionaryList("Cmaj","Fmin", song);
+  printf("%s\n",song->head->next->key);
+  printf("%s\n",song->head->next->chords->head->next->key);
   printf("%d\n",song->head->next->chords->head->next->freq);
+  updateDictionaryList("Cmaj","Fmin",song);
+  printf("This should be Cmaj:%s\n",song->head->next->key);
+  printf("This should be s:%s\n",song->head->next->next->key);
+  printf("This should be Fmin:%s\n",song->head->next->chords->head->next->key);
+  printf("This shoudl be s:%s\n",song->head->next->chords->head->next->next->key);
+  printf("This should be Fmin Freq 2:%d\n",song->head->next->chords->head->next->freq);
+
   return 1;
   
 }
