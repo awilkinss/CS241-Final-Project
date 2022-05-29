@@ -1,4 +1,4 @@
- #include <stdio.h>
+#include <stdio.h>
 #include <ctype.h>
 #include <limits.h>
 #include <string.h>
@@ -138,7 +138,7 @@ void updateDictionary(char chord, struct dictionary *dict){
   struct node *tempChord = fetchChord(chord, chordListTemp);
   if(tempChord->key == 's'){
     struct node *tempChord2 = createNode(chord);
-    tempChord2->freq = tempChord->freq +1;
+    tempChord2->freq = tempChord2->freq +1;
     insertNode(tempChord2, chordListTemp);
   }else{
     tempChord->freq = tempChord->freq +1;
@@ -162,6 +162,10 @@ int main(){
   struct dictList *song = createDictList();
   printf("%c\n",song->head->key);
   printf("%c\n",song->head->chords->head->key);
+  updateDictionaryList('C','F', song);
+  printf("%c\n",song->head->next->key);
+  printf("%c\n",song->head->next->chords->head->next->key);
+  printf("%d\n",song->head->next->chords->head->next->freq);
   return 1;
   
 }
