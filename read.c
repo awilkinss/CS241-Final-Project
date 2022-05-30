@@ -1,19 +1,14 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-int main(){
+int read(){
         char line[100], filename[50], chords[64][128];
         char *parsed;
         FILE *input;
-        int i,j,size;
-        const char delim[2] = " ";
+        int i,j,l,size;
 
         i=0;
         j=0;
         printf("Please pick a file: ");
         scanf("%s",filename);
-        input = fopen("chords.txt", "r");
+        input = fopen(filename, "r");
 
         if(input == NULL) {
                 perror("Failure to open");
@@ -25,19 +20,29 @@ int main(){
                         i++;
                 }
                 else{
-                        parsed = strtok(line, delim);
+                        parsed = trim(strtok(line," "));
                         while(parsed != NULL){
                                 strcpy(chords[j],parsed);
-                                parsed = strtok(NULL,delim);
                                 j++;
                                 size++;
+                                parsed = strtok(NULL," ");
                         }
                         i++;
-                         }
+                }
         }
         for(int i=0; i < size ;i++){
                 printf("%s \n", chords[i]);
         }
 
         return 0;
+}
+
+char *trim(char *s){
+        int l = strlen(s);
+
+
+        while(isspace(s[l-1])) --l;
+        while(*s && isspace(*s)) ++s, --l;
+
+        return strndup(s,l);
 }
