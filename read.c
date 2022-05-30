@@ -1,19 +1,30 @@
-int read(){
-        char line[100], filename[50], chords[64][128];
-        char *parsed;
-        FILE *input;
-        int i,j,l,size;
+/* program to read in a corpus sheet file
+   and return an array of chords used
+   in the file */
 
-        i=0;
-        j=0;
-        printf("Please pick a file: ");
-        scanf("%s",filename);
-        input = fopen(filename, "r");
+#include <stdlib.h>
+#include <ctype.h>
 
+char **read(char *filename){
+  /*
+  char line[100], filename[50], chords[64][128];
+  char *parsed;
+  FILE *input;
+  int i,j,l,size;
+  
+  i=0;
+  j=0;
+  printf("Please pick a file: ");
+  scanf("%s",filename);
+  */
+  
+        FILE *input = fopen(filename, "r");
         if(input == NULL) {
                 perror("Failure to open");
                 exit(1);
         }
+
+	char *chord = scaf("%s", input);
 
         while (fgets(line,sizeof(line),input)){
                 if(i%2==0){
