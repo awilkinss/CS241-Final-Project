@@ -1,0 +1,17 @@
+/* Toby, Alim, Jesse - driver file for final
+   project */
+
+#include <stdio.h>
+#include <ctype.h>
+#include <limits.h>
+#include "read.h"
+#include "music.h"
+
+int main(int argc, char *argv[]) {
+  char **orig_chords = read(argv[1]);
+
+
+
+
+  return 0;
+}

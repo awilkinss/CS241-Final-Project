@@ -1,19 +1,27 @@
+/* Jesse, Toby, Alim - functions used in
+   Markov model chord generation */
+
 #include <stdio.h>
 #include <ctype.h>
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
 
+/* node struct */
 struct node{
   char key;
   int freq;
   struct node *next;
   struct node *prev;
 };
+
+/* list struct */
 struct list{
   struct node *head;
   struct node *tail;
 };
+
+/* dictionary struct */
 struct dictionary{
   char key;
   struct list *chords;
@@ -21,10 +29,14 @@ struct dictionary{
   struct dictionary *next;
   struct dictionary *prev;
 };
+
+/* dictionary list struct */
 struct dictList{
   struct dictionary *head;
   struct dictionary *tail;
 };
+
+/* func for creating a node */
 struct node *createNode(char c){
   struct node *newNode = malloc(sizeof(struct node));
   if(newNode == NULL){
@@ -37,6 +49,8 @@ struct node *createNode(char c){
   newNode->prev = NULL;
   return newNode;
 }
+
+/* func for creating a list */
 struct list *createList(){
   struct list *newList = malloc(sizeof(struct list));
   struct node *head = createNode('s');
@@ -51,6 +65,8 @@ struct list *createList(){
   newList->tail->prev = newList->head;
   return newList;
 }
+
+/* func for creating a dictionary */
 struct dictionary *createDict(char c){
   struct dictionary *newDictionary = malloc(sizeof(struct dictionary));
   if(newDictionary == NULL){
@@ -64,6 +80,8 @@ struct dictionary *createDict(char c){
   newDictionary->prev = NULL;
   return newDictionary;
 }
+
+/* func for creating a dictionary list */
 struct dictList *createDictList(){
   struct dictList *newDictList = malloc(sizeof(struct dictList));
   if(newDictList == NULL){
@@ -78,6 +96,9 @@ struct dictList *createDictList(){
   newDictList->tail->prev = newDictList->head;
   return newDictList;
 }
+
+/* func that fetches a certain dictionary based 
+   on an inputed key and dictionary list */
 struct dictionary *fetchDictionary(char key, struct dictList *song){
   struct dictionary *temp = song->head->next;
   while(temp != song->tail){
@@ -88,6 +109,8 @@ struct dictionary *fetchDictionary(char key, struct dictList *song){
   }
   return temp;
 }
+
+/* func that fetches a chord node from a chord list */ 
 struct node *fetchChord(char chord, struct list *chordList){
   struct node *temp = chordList->head->next;
   while(temp != chordList->tail){
@@ -98,6 +121,8 @@ struct node *fetchChord(char chord, struct list *chordList){
   }
   return temp;
 }
+
+/* func to insert a node in a list */
 void insertNode(struct node *chord, struct list *chords){
   struct node *head = chords->head;
   struct node *tail = chords->tail;
@@ -115,6 +140,9 @@ void insertNode(struct node *chord, struct list *chords){
     chord->prev = head;
   }
 }
+
+/* inserts a dictionary into a dictionary
+   list */
 void insertDictionary(struct dictionary *newDict, struct dictList *song){
   struct dictionary *head = song->head;
   struct dictionary *tail = song->tail;
